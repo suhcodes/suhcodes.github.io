@@ -187,6 +187,7 @@ input, select, textarea {
 	}
 
 	#wrapper {
+		background-color: #333;
 		-moz-animation: wrapper 3s forwards;
 		-webkit-animation: wrapper 3s forwards;
 		-ms-animation: wrapper 3s forwards;
