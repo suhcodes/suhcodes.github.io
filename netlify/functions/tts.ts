@@ -84,7 +84,7 @@ export const handler: Handler = async event => {
           stability: voice === "narrative" ? 0.35 : 0.55,
           similarity_boost: 0.75,
           style: voice === "narrative" ? 0.4 : 0.0,
-          speed: 1.25,
+          speed: 1.2,
         },
       }),
     }
