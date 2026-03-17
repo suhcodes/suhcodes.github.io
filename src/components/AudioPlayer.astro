@@ -1,12 +1,11 @@
 ---
 interface Props {
-  postText: string;
   voice: "neutral" | "narrative";
 }
-const { postText, voice } = Astro.props;
+const { voice } = Astro.props;
 ---
 
-<div class="my-6" data-audio-player data-voice={voice} data-text={postText}>
+<div class="my-6" data-audio-player data-voice={voice}>
   <button
     id="tts-btn"
     class="inline-flex items-center gap-2 rounded-md border border-accent px-4 py-2 text-sm font-medium text-accent transition hover:bg-accent hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -31,7 +30,15 @@ const { postText, voice } = Astro.props;
 
   btn?.addEventListener("click", async () => {
     const voice = player?.dataset.voice ?? "neutral";
-    const text = player?.dataset.text ?? "";
+
+    // Extract full text from the article element
+    const article = document.getElementById("article");
+    const text = article ? article.innerText.trim() : "";
+
+    if (!text) {
+      label.textContent = "No content found";
+      return;
+    }
 
     label.textContent = "Loading…";
     btn.disabled = true;

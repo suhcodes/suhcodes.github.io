@@ -1,18 +1,30 @@
 import type { Handler } from "@netlify/functions";
+import { getStore } from "@netlify/blobs";
+import crypto from "crypto";
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-// Replace these with your chosen ElevenLabs voice IDs
-// Find them at: https://elevenlabs.io/voice-library
 const VOICE_MAP = {
-  neutral: process.env.ELEVENLABS_NEUTRAL_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM", // Rachel — calm, clear
-  narrative: process.env.ELEVENLABS_NARRATIVE_VOICE_ID ?? "AZnzlk1XvdvUeBnXmlld", // Domi — expressive
+  neutral: process.env.ELEVENLABS_NEUTRAL_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM",
+  narrative:
+    process.env.ELEVENLABS_NARRATIVE_VOICE_ID ?? "AZnzlk1XvdvUeBnXmlld",
 };
+
+function cacheKey(text: string, voice: string): string {
+  return crypto
+    .createHash("sha256")
+    .update(`${voice}:${text}`)
+    .digest("hex");
+}
 
 export const handler: Handler = async event => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
+  if (!ELEVENLABS_API_KEY) {
+    console.error("ELEVENLABS_API_KEY is not set");
+    return { statusCode: 500, body: "TTS provider not configured" };
   }
 
   let text: string, voice: string;
@@ -27,78 +39,66 @@ export const handler: Handler = async event => {
   }
 
   if (!["neutral", "narrative"].includes(voice)) {
-    return { statusCode: 400, body: "Invalid voice. Must be neutral or narrative" };
+    return {
+      statusCode: 400,
+      body: "Invalid voice. Must be neutral or narrative",
+    };
   }
 
-  // Primary: ElevenLabs
-  if (ELEVENLABS_API_KEY) {
-    try {
-      const voiceId = VOICE_MAP[voice as keyof typeof VOICE_MAP];
-      const res = await fetch(
-        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-        {
-          method: "POST",
-          headers: {
-            "xi-api-key": ELEVENLABS_API_KEY,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text,
-            model_id: "eleven_turbo_v2",
-            voice_settings: {
-              stability: voice === "narrative" ? 0.35 : 0.55,
-              similarity_boost: 0.75,
-              style: voice === "narrative" ? 0.4 : 0.0,
-            },
-          }),
-        }
-      );
+  const store = getStore("tts-cache");
+  const key = cacheKey(text, voice);
 
-      if (res.ok) {
-        const audioBuffer = await res.arrayBuffer();
-        return {
-          statusCode: 200,
-          headers: { "Content-Type": "audio/mpeg" },
-          body: Buffer.from(audioBuffer).toString("base64"),
-          isBase64Encoded: true,
-        };
-      }
-    } catch {
-      // fall through to OpenAI
-    }
+  // Check cache first
+  const cached = await store.get(key, { type: "arrayBuffer" });
+  if (cached) {
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "audio/mpeg", "X-Cache": "HIT" },
+      body: Buffer.from(cached).toString("base64"),
+      isBase64Encoded: true,
+    };
   }
 
-  // Fallback: OpenAI TTS
-  if (!OPENAI_API_KEY) {
-    return { statusCode: 500, body: "No TTS provider configured" };
-  }
-
-  try {
-    const res = await fetch("https://api.openai.com/v1/audio/speech", {
+  // Generate via ElevenLabs
+  const voiceId = VOICE_MAP[voice as keyof typeof VOICE_MAP];
+  const res = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+    {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        "xi-api-key": ELEVENLABS_API_KEY,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "tts-1",
-        input: text,
-        voice: voice === "narrative" ? "fable" : "alloy",
+        text,
+        model_id: "eleven_turbo_v2",
+        voice_settings: {
+          stability: voice === "narrative" ? 0.35 : 0.55,
+          similarity_boost: 0.75,
+          style: voice === "narrative" ? 0.4 : 0.0,
+          speed: 1.25,
+        },
       }),
-    });
-
-    if (!res.ok) {
-      return { statusCode: 500, body: "TTS generation failed" };
     }
+  );
 
-    const audioBuffer = await res.arrayBuffer();
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "audio/mpeg" },
-      body: Buffer.from(audioBuffer).toString("base64"),
-      isBase64Encoded: true,
-    };
-  } catch {
-    return { statusCode: 500, body: "TTS generation failed" };
+  if (!res.ok) {
+    const errBody = await res.text();
+    console.error(`ElevenLabs error ${res.status}:`, errBody);
+    return { statusCode: res.status, body: `ElevenLabs error: ${errBody}` };
   }
+
+  const audioBuffer = await res.arrayBuffer();
+
+  // Store in cache (fire and forget — don't block the response)
+  store.set(key, audioBuffer).catch(err => {
+    console.error("Failed to cache audio:", err);
+  });
+
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "audio/mpeg", "X-Cache": "MISS" },
+    body: Buffer.from(audioBuffer).toString("base64"),
+    isBase64Encoded: true,
+  };
 };
