@@ -5,8 +5,8 @@ import type { Config, Context } from "@netlify/functions";
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 
 const VOICE_MAP = {
-  neutral: process.env.ELEVENLABS_NEUTRAL_VOICE_ID,
-  narrative: process.env.ELEVENLABS_NARRATIVE_VOICE_ID,
+  neutral: process.env.ELEVENLABS_NEUTRAL_VOICE_ID ?? "pNInz6obpgDQGcFmaJgB",
+  narrative: process.env.ELEVENLABS_NARRATIVE_VOICE_ID ?? "VR6AewLTigWG4xSOukaG",
 };
 
 function cacheKey(text: string, voice: string): string {
@@ -83,7 +83,7 @@ export default async function handler(req: Request, context: Context) {
 
   // Store in cache (fire and forget)
   context.waitUntil(
-    store.set(key, audioBuffer).catch((err) => {
+    store.set(key, audioBuffer).catch((err: unknown) => {
       console.error("Failed to cache audio:", err);
     })
   );
