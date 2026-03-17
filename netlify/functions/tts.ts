@@ -45,18 +45,31 @@ export const handler: Handler = async event => {
     };
   }
 
-  const store = getStore("tts-cache");
+  let store: ReturnType<typeof getStore> | null = null;
+  try {
+    store = getStore("tts-cache");
+  } catch {
+    // Blobs not available in this environment — skip caching
+  }
+
   const key = cacheKey(text, voice);
 
   // Check cache first
-  const cached = await store.get(key, { type: "arrayBuffer" });
-  if (cached) {
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "audio/mpeg", "X-Cache": "HIT" },
-      body: Buffer.from(cached).toString("base64"),
-      isBase64Encoded: true,
-    };
+  if (store) {
+    try {
+      const cached = await store.get(key, { type: "arrayBuffer" });
+      if (cached) {
+        return {
+          statusCode: 200,
+          headers: { "Content-Type": "audio/mpeg", "X-Cache": "HIT" },
+          body: Buffer.from(cached).toString("base64"),
+          isBase64Encoded: true,
+        };
+      }
+    } catch (err: unknown) {
+      console.error("Blobs read failed:", err);
+      store = null; // disable caching for this request
+    }
   }
 
   // Generate via ElevenLabs
@@ -76,7 +89,7 @@ export const handler: Handler = async event => {
           stability: voice === "narrative" ? 0.35 : 0.55,
           similarity_boost: 0.75,
           style: voice === "narrative" ? 0.4 : 0.0,
-          speed: 1.25,
+          speed: 1.2,
         },
       }),
     }
@@ -91,9 +104,11 @@ export const handler: Handler = async event => {
   const audioBuffer = await res.arrayBuffer();
 
   // Store in cache (fire and forget — don't block the response)
-  store.set(key, audioBuffer).catch(err => {
-    console.error("Failed to cache audio:", err);
-  });
+  if (store) {
+    store.set(key, audioBuffer).catch((err: unknown) => {
+      console.error("Failed to cache audio:", err);
+    });
+  }
 
   return {
     statusCode: 200,
