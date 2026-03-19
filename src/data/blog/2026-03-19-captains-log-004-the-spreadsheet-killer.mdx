@@ -1,0 +1,69 @@
+---
+title: "Captain's Log, Stardate 2026.074 - part 1"
+description: 'Entry #004 · The Spreadsheet Killer. Two new agents, an Auth0 integration, and the hard lesson of what happens when agents work without boundaries.'
+pubDatetime: 2026-03-19T04:00:00Z
+author: 'Suh'
+postType: captains-log
+experimentNumber: '001'
+codename: 'The Spreadsheet Killer'
+status: 'Ongoing'
+duration: 'Day 2 of 2 — Morning Session'
+featured: false
+draft: false
+tags: ['captains-log', 'ai', 'claude', 'react', 'auth0', 'finance']
+needsReview: false
+ttsVoice: narrative
+---
+
+### 📡 Mission Briefing
+
+Day 2. CLAUDE.md was live, skills were sharp, backend and DB agents were calibrated. Time to put all of it to a real test by building the first actual feature: authentication, end to end.
+
+---
+
+### 🔬 Observations
+
+Before touching auth, the agent roster got two new additions following the same pattern that made the backend agent work — plan first, no execution until the prompt is unambiguous, TaskCreate during execution.
+
+- **Design System Agent** — owns the UI components directory, responsible for all primitive components and their tests
+- **Frontend Features Agent** — owns project features; stores, API connections, components, pages — everything that makes a feature actually work
+
+With the team assembled, the Auth0 integration could begin. Kiro condensed the research into a structured prompt, the DB schema agent built all required database support first — plan presented, approved, tasks created, execution clean with solid documented reasoning on every decision made. The backend agent followed the same sequence and delivered the full auth API.
+
+With the API live, its own documentation became the next tool. Every endpoint and contract needed on the frontend was already described. No guessing, no back and forth.
+
+---
+
+### ⚡ Anomalies Detected
+
+**The agent that forgot its job description.** The frontend features agent had one explicit requirement — present a plan, wait for approval, then create tasks. It skipped all of that and started generating code immediately. Stopped it on the spot. No plan meant no visibility, and at this stage that wasn't acceptable. Explicitly requesting it to plan, show the plan, then create tasks got things back on track.
+
+**The inconsistent implementation.** When the agent was let loose on the full auth UI, several problems surfaced at once — plan and task creation skipped again, one-off components built without importing from shadcn, primitives that should have been reusable created as single-use, and business logic sitting directly inside component scope.
+
+The root cause was clear in hindsight: the design system agent owned UI components, but the frontend features agent had never been told that. CLAUDE.md had no opinions on component architecture or separation of concerns. Two agents filling undefined territory — filling it with guesswork.
+
+> 🧠 **Lesson: An opinionated CLAUDE.md is one of the keys to success.** If an agent can't resolve a pattern from documentation it will hallucinate one. The more covered, the less likely that becomes. And make sure agents know where their work ends and another agent's begins.
+
+---
+
+### 📊 Results — Auth, Eventually Done Right
+
+Every observed problem became a rule. Component ownership, primitive reuse, business logic boundaries, shadcn import requirements — written out explicitly, one by one. Kiro had clean context, a few targeted web searches filled the remaining gaps, and both CLAUDE.md and the agent instructions were updated thoroughly.
+
+The retry went cleanly. Design system agent built all required primitive components with unit tests. Features agent built everything else — reusing those components, placing logic where it belonged. Auth was working, properly structured, and consistent with every convention established on Day 1.
+
+---
+
+### 🧠 Field Notes
+
+- The first time you build something, make sure CLAUDE.md knows the ins and outs. Educate your agents before you need them, not after they've already gone rogue.
+- Agents filling undefined territory fill it with guesswork. Ownership boundaries prevent two agents from solving the same problem in two different ways.
+- If an agent skips its process, stop it immediately. No plan means no visibility. The few seconds it takes to enforce the workflow saves the minutes it takes to untangle what comes out the other side.
+
+---
+
+### 📁 Transmission Continues...
+
+_Auth is live, the agent workflow is tighter, and the lessons are already paying off. The dashboard is next — and with it, the first real test of the feature pipeline at scale._
+
+---
