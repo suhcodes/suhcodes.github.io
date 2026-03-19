@@ -1,0 +1,90 @@
+---
+title: "Captain's Log, Stardate 2026.074 - part 2"
+description: 'Entry #005 · The Spreadsheet Killer. The dashboard ships, a schema gets defended, and the experiment concludes with a workflow that held up under pressure.'
+pubDatetime: 2026-03-19T14:00:00Z
+author: 'Suh'
+postType: captains-log
+experimentNumber: '001'
+codename: 'The Spreadsheet Killer'
+status: 'Concluded'
+duration: 'Day 2 of 2 — Final Session'
+featured: true
+draft: false
+tags: ['captains-log', 'ai', 'claude', 'react', 'finance']
+needsReview: false
+ttsVoice: narrative
+---
+
+## 🧪 EXPERIMENT LOG — Entry #001 · Part 5
+
+**Codename:** The Spreadsheet Killer
+**Status:** 🟢 Concluded
+**Duration:** Day 2 of 2 — Final Session
+
+---
+
+### 📡 Mission Briefing
+
+This whole experiment was building to this moment. An hour sharpening the AI tools, and then — step back, let them work, go play some games, and hope the foundations held.
+
+---
+
+### 🔬 Observations
+
+The dashboard was always the real test. More complex than a login page, more data to reason about, more moving pieces to keep consistent. With a defined interface already in mind, the workflow kicked off the same way it had all weekend — DB first.
+
+The schema agent did something worth calling out: it didn't just execute, it pushed back. The amount field being negative or positive was enough to determine whether a transaction was an income or expense — no need for a separate type column. And `categoryVariant`? Purely a UI concern, had no business being in the database. Both observations were correct. Both would have caused quiet pain later if left unchallenged.
+
+---
+
+### ⚡ Anomalies Detected
+
+**Wrong audience, wrong terminology.** The frontend agent was still skipping its plan and TaskCreate workflow. Digging into it revealed the culprit — when Kiro was asked to replicate the plan-first and TaskCreate behavior, it wrote the instructions using Kiro's own terminology instead of Claude's. The agent was reading instructions written for the wrong tool.
+
+> 🧠 **Lesson: When cross-using AI platforms, make sure instructions are written for the right targeted audience.** Terminology that makes sense in one tool can be meaningless — or worse, misread — in another.
+
+---
+
+### 📊 Results — The Dashboard Ships
+
+**Design came first this time.** Pencil handled the dashboard mockups — a great tool for AI-assisted design that already has shadcn assets baked into its preset collection. A quick prompt describing what was needed and designs were generating live, like one of those sped-up designer videos from social media. Solid visual foundation before a single component was written.
+
+**UI agent built the blocks.** With the Pencil design as reference, the design system agent created all primitive components first, then a dashboard component from the active selection. More granular prompting was needed here to keep things in their rightful scopes — but once the layout was in place with sidebar, header and sections, the handoff to the features agent was clean.
+
+**Features agent finished the job.** With auth already teaching most of the patterns, the dashboard came together significantly faster. Stores, helpers, feature components — all built following the established workflow. A few metric calculations from existing table data and it was done.
+
+**5pm Sunday.** Login, dashboard with metrics, transaction table, and a modal form for new entries — all working.
+
+---
+
+### 🧠 Field Notes
+
+- A DB agent that pushes back on your schema is more valuable than one that just executes. Normalization caught early is a refactor avoided later.
+- UI benefits from more granular prompting than backend work. Building blocks first, composition second — the sequence matters.
+- When features are built following the correct workflow, refactoring becomes the exception rather than the rule.
+- Cross-platform AI workflows need translation. Instructions written in one tool's language don't automatically land correctly in another.
+
+**The tools and where they shined:**
+
+- **Kiro** — thinking partner, research synthesis, prompt generation, architectural decisions
+- **Claude Code** — execution engine, agent orchestration, feature building
+- **Pencil** — AI-assisted design with shadcn presets, fast visual prototyping
+- **Warp** — terminal experience that kept the command line from getting in the way
+
+---
+
+### 📁 Final Transmission
+
+_Not a complete app — but a working login, a live dashboard, real data, and a workflow that held up under pressure. Built across a weekend, on and off, without spending every hour struggling in front of a screen._
+
+_The experiment was never really about the app. It was about figuring out how to work with AI without losing control of what gets built. That part? Mission accomplished._
+
+_— Experiment concluded. For now. 🧪_
+
+---
+
+### 📖 Going Deeper
+
+The experiment logs tell the story of the weekend — but if you're curious about the _why_ behind the agent architecture, skill systems, and behavioral design that made it work, I wrote a companion piece on that.
+
+**[Read: Building Agentic Systems as Living Architectures →](/posts/building-agentic-systems-as-living-architectures)**
