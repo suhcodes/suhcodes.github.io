@@ -1,0 +1,82 @@
+---
+title: "Captain's Log, Stardate 2026.076 - part 3"
+description: 'Entry #001 · Part 3 — The Spreadsheet Killer. Database foundations laid, Docker done properly, TDD introduced, and agents calibrated for real feature work.'
+pubDatetime: 2026-03-18T22:00:00Z
+author: 'Suh'
+postType: captains-log
+experimentNumber: '001'
+codename: 'The Spreadsheet Killer'
+status: 'Ongoing'
+duration: 'Day 1 of 2 — Evening Session'
+featured: true
+draft: false
+tags: ['captains-log', 'ai', 'claude', 'nestjs', 'finance']
+needsReview: false
+ttsVoice: narrative
+---
+
+## 🧪 EXPERIMENT LOG — Entry #001 · Part 3
+
+**Codename:** The Spreadsheet Killer
+**Status:** 🟡 In Progress
+**Duration:** Day 1 of 2 — Evening Session
+
+---
+
+### 📡 Mission Briefing
+
+Evening. The structure was solid, the skills were in place — now came the part that quietly decides whether a project lives or dies: the database. And a few other things that turned this session into one of the most productive of the weekend.
+
+---
+
+### 🔬 Observations
+
+Frontend developers have a complicated relationship with databases. They're easy to underestimate — until you're six months into a project and paying the price for decisions made in the first hour. I spent the beginning of my career working with databases directly, which left me with a healthy respect for getting them right early. That context shaped everything in this session.
+
+---
+
+### ⚡ Anomalies Detected
+
+One gap surfaced quickly. I'd built skills for nearly every structural piece of the API — controllers, services, modules, helpers, types — but had completely skipped the layer that everything else ultimately depends on: the database handlers. No migration skill. No entity skill. A meaningful oversight.
+
+---
+
+### 📊 Results — Phase 5: Foundations That Actually Hold
+
+**Docker, done properly.** Before touching the database itself, I put down rules for Docker setup — multi-stage builds, layer caching, Alpine images. The basics, but the basics done right. A bloated or fragile container causes the kind of slow-burn problems that are annoying to diagnose and easy to avoid.
+
+**Filling the gap: DB skills added.** Sat down and reasoned through what the migration and entity skills needed to cover — directory structure, table naming conventions, type conventions, constraint best practices, relationship guidelines, DTO examples. And one important rule added to the controller skill: controllers return DTOs, never raw entities. TypeORM handles the migration safety net. The skill set was finally complete.
+
+**The workflow delivered again.** Kiro drafted the Docker and Postgres configuration prompt. Claude executed — full Docker setup, Postgres wired in, environment variables handed back cleanly and dropped into both `.env` and `.env.example`. The GitHub Actions setup from earlier got updated too, this time with AI, adding a Postgres service to the CI pipeline. CLAUDE.md updated to reflect everything introduced in this session.
+
+**TDD enters the picture.** For the backend, I introduced a test-driven development approach from this point forward. The rule: tests define the feature, not the other way around. If the test fails, the implementation failed — not the test. It's a discipline that slows you down for about five minutes and saves you hours later.
+
+**The agent experiments.** This is where the session got genuinely interesting.
+
+Knowing I'm no database architect, I didn't want to just hope for the best — I did some research into how a database architect actually thinks when introducing new features, found a set of high-leverage principles, and turned that into a **DB Expert Agent**. A Claude agent with a specific lens: think critically about every schema decision before it gets made.
+
+Then came a **Backend Architect Agent** — built around TDD and a fail-fast philosophy, with clear instructions on feature creation from first principles.
+
+The first real test for the architect agent: build an Auth0 integration as an auth service, callable by the frontend client.
+
+It didn't go perfectly. The agent had the right mindset but was missing operational clarity — it didn't know which tools to invoke, when to invoke them, or what the step-by-step process for a new feature actually looked like. The output reflected that vagueness.
+
+> 🧠 **Lesson #2: Improve the agent, and the agent improves the code.**
+>
+> An agent is only as good as its instructions. Vague agent, vague output. This wasn't a failure — it was a calibration. The architect agent got a proper rewrite: explicit tooling guidelines, a defined feature creation sequence, clear decision points. Then it was ready to actually build something.
+
+---
+
+### 🧠 Field Notes
+
+- Database decisions made in hour one echo through the entire life of a project. Treat them accordingly.
+- A complete skill set matters — one missing skill is one area where consistency quietly breaks down.
+- DTOs as the contract between backend and frontend isn't just good practice, it's protection. Raw entities leaking out of controllers is the kind of thing that causes subtle, hard-to-trace bugs.
+- TDD on the backend isn't about being rigorous for its own sake — it's about letting requirements drive implementation instead of the other way around.
+- Agents need operational instructions, not just a personality. Knowing _what_ to do isn't enough — knowing _how_ and _when_ is what makes the difference.
+
+---
+
+### 📁 Transmission Continues...
+
+_The agents are calibrated, the database is ready, and the auth feature is next. Day 1 is almost done — but not before one more proper test of everything built so far._

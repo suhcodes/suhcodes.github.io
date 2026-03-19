@@ -1,0 +1,70 @@
+---
+title: "Captain's Log, Stardate 2026.076 - part 2"
+description: 'Entry #001 · Part 2 — The Spreadsheet Killer. Frontend scaffolded, backend deliberated, agents calibrated. The afternoon session where building got real — and the first hard lessons showed up.'
+pubDatetime: 2026-03-18T18:00:00Z
+author: 'Suh'
+postType: captains-log
+experimentNumber: '001'
+codename: 'The Spreadsheet Killer'
+status: 'Ongoing'
+duration: 'Day 1 of 2 — Afternoon Session'
+featured: true
+draft: false
+tags: ['captains-log', 'ai', 'claude', 'nestjs', 'finance']
+needsReview: false
+ttsVoice: narrative
+---
+
+### 📡 Mission Briefing
+
+Morning got the foundation in place. Afternoon was where the real building began — and where the first real lessons showed up.
+
+---
+
+### 🔬 Observations
+
+Frontend scaffolding kicked things off. What felt like a perfectly reasonable instruction turned into the first hard lesson of the weekend. The backend came next, along with some genuine second-guessing about the stack — worth every minute of it. By the time both projects were connected and talking to each other, a quieter problem was already surfacing underneath.
+
+---
+
+### ⚡ Anomalies Detected
+
+**The Loop.** A casual prompt to scaffold the frontend sent Claude into a polite, endless cycle — `cd` into folder, fail on permissions, back out, return to root, repeat. The culprit wasn't Claude. It was the instruction.
+
+**The consistency gap.** With both projects scaffolded and wired together, some quick frontend work revealed something uncomfortable. Output was technically correct but stylistically inconsistent across similar tasks. CLAUDE.md existed but was too thin to carry any real weight. Not a failure — a warning.
+
+**The half-built agent.** A Backend Architect Agent stood up towards the end of the session fell short on its first real task. Good mindset, vague output — it didn't know which tools to invoke, when, or in what order.
+
+---
+
+### 📊 Results
+
+NestJS held up to scrutiny after a deliberate stack review weighing language familiarity, long-term sustainability and auth approach. Auth0 was the right call for a fast, safe start. Decision confirmed before a single file was touched — time well spent.
+
+Both projects were scaffolded and connected through local subdomains by mid-afternoon, with a `local-api.*` prefix keeping the dev environment feeling intentional rather than cobbled together. First PRs shipped for both.
+
+The consistency gap triggered a full stop on features in favour of building a proper skill system — slash commands covering every structural unit across both projects, each with predefined patterns, type safety, and one standing instruction: ask rather than assume. The database layer got the same treatment, with migration and entity skills, naming conventions, constraint guidelines, and a hard rule that controllers return DTOs, never raw entities. TDD was introduced for the backend from this point forward.
+
+The architect agent got a full rewrite after its first attempt fell flat — explicit tooling guidelines, a defined feature creation sequence, clear decision points. The second version was ready to actually build something.
+
+---
+
+### 🧠 Field Notes
+
+> 💡 **Never give AI vague instructions — it's a disaster recipe.**
+> The quality of output is a direct reflection of the quality of input. Vague prompt: chaos. Detailed prompt: done before the coffee cools.
+
+> 💡 **Split thinking and building across tools.**
+> Kiro handled architecture, conventions and prompt generation. Claude handled execution. Passing Claude a well-scoped prompt felt like handing a properly written ticket to a developer who actually reads them.
+
+> 💡 **Consistency has to be designed in.**
+> It doesn't emerge on its own. Conventions before features — always.
+
+> 💡 **Improve the agent, and the agent improves the code.**
+> A vague agent produces vague output. Operational clarity is what turns good intentions into useful results.
+
+---
+
+### 📁 Transmission Continues...
+
+_Skills sharp, agents calibrated, frontend and backend talking. The evening shift brings databases, Docker, and one small feature that puts everything built today to the test._
