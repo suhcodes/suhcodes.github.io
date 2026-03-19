@@ -1,0 +1,222 @@
+---
+title: 'Building Agentic Systems as Living Architectures'
+description: 'A mental model for designing agentic systems — from behavioral genomes and modular skills to multi-agent workflows and emergent behavior.'
+pubDatetime: 2026-03-19T16:00:00Z
+author: 'Suh'
+postType: standard
+featured: true
+draft: false
+tags: ['ai', 'architecture', 'agents', 'claude']
+needsReview: false
+ttsVoice: neutral
+---
+
+# Building Agentic Systems as Living Architectures
+
+Modern software is undergoing a quiet but profound shift. We are no longer just writing functions or wiring APIs — we are beginning to design systems that act. These systems reason, choose tools, adapt to context, and pursue goals. In other words, they behave less like static programs and more like living organisms.
+
+To better understand and design these systems, it helps to adopt a mental model that blends atomic design with biological architecture. This perspective reveals agentic systems not as monolithic constructs, but as layered, evolving structures — built from fundamental units that scale into autonomous entities.
+
+> Code samples throughout this article are pseudocode — they illustrate logic and structure, not runnable implementations. The test examples in the Control vs Autonomy section are the only exception.
+
+---
+
+## The Core Idea: From Code to Organism
+
+Agentic systems can be understood as living architectures composed of distinct layers:
+
+- A behavioral blueprint that defines how the system should think
+- A set of functional capabilities that allow it to act
+- A coordinating layer that enables autonomy and decision-making
+
+```
+loop until goal is met:
+  observe()
+  plan()
+  act with skills()
+  reflect()
+```
+
+---
+
+## ⚛️ Atoms: The Behavioral Genome (CLAUDE.md)
+
+At the foundation of an agentic system lies a declarative file such as CLAUDE.md — the behavioral genome that governs how the system reasons, what constraints it respects, and how it approaches decisions.
+
+```markdown
+# CLAUDE.md
+
+## Principles
+
+- Be concise and correct
+- Prefer deterministic tools over guessing
+
+## Constraints
+
+- Never fabricate data
+- Always cite sources when using web search
+
+## Behavior
+
+- Think step-by-step when planning
+- Use tools before answering if uncertainty exists
+```
+
+---
+
+## 🧪 Molecules: Skills as Functional Units
+
+Skills are modular, reusable units of execution — the building blocks agents use to interact with the world. Each skill does one thing well and can be composed with others.
+
+```
+skill search_docs(query):
+  return database.search(query)
+
+skill summarize(text):
+  return llm("Summarize: " + text)
+```
+
+When solving a task, the pattern is consistent: identify the needed skills, call them explicitly, and combine their results.
+
+---
+
+## 🧠 Organisms: Agents as Coordinated Intelligence
+
+An agent orchestrates skills under its behavioral genome to pursue a goal. Rather than executing a fixed sequence, it plans, acts, and adapts.
+
+```
+Goal: "Write a report on X"
+
+Plan:
+  1. search_docs("X overview")
+  2. summarize(results)
+  3. structure into sections
+  4. refine tone
+
+Execute step-by-step. Re-plan if output is insufficient.
+```
+
+```
+plan = llm(goal)
+
+for each step in plan:
+  result = run_skill(step)
+  memory.add(result)
+```
+
+---
+
+## 🧩 Systems: Multi-Agent Workflows as Higher-Order Structures
+
+Individual agents can be composed into pipelines where each agent owns a distinct responsibility, passing context forward through shared memory.
+
+```
+Agent A (Researcher)  →  gathers information
+Agent B (Analyst)     →  extracts insights
+Agent C (Writer)      →  produces final output
+
+Shared memory:
+  - context.json
+  - goals.json
+```
+
+---
+
+## 🔄 Emergence, Not Assembly
+
+One of the most compelling properties of agentic systems is emergence — behavior that arises from skill composition rather than explicit instruction.
+
+```
+Agent combines:
+  - search_docs
+  - summarize
+  - translate
+
+→ Produces a multilingual report without being explicitly told to
+```
+
+This isn't a bug or a surprise — it's the system doing exactly what well-designed skill composition enables.
+
+---
+
+## ⚖️ The Tension: Control vs Autonomy
+
+The more capable an agent becomes, the more important its guardrails are. The behavioral genome anchors this balance — and TDD acts as an externalized immune system, catching behavioral drift before it compounds.
+
+```markdown
+# Guardrail instruction
+
+If unsure:
+
+- Ask for clarification, OR
+- Use the search skill
+  Never guess.
+```
+
+```typescript
+// Behavioral test — hallucination guard
+it("does not hallucinate unknown facts", async () => {
+  const result = await agent("Who won the Mars World Cup?")
+  expect(result).toContain("I don't know")
+})
+
+// Decision boundary test — tool usage
+it("uses search when uncertain", async () => {
+  const spy = mock(searchDocs)
+  await agent("Latest GDP of Brazil?")
+  expect(spy).toHaveBeenCalled()
+})
+```
+
+---
+
+## 🧬 Designing for Evolution
+
+Agentic systems are not deployed and forgotten — they are iteratively refined. Evolution happens across four dimensions: improved behavioral definitions, expanded skill sets, feedback loops and memory mechanisms, and test-driven refinement that acts as a persistent immune layer.
+
+```markdown
+# Prompt evolution over time
+
+v1: "Summarize this"
+v2: "Summarize with bullet points and key metrics"
+v3: "Summarize with bullet points, key metrics, and open uncertainties"
+```
+
+```
+// Regression suite grows alongside the system
+tests = [
+  "no hallucination",
+  "uses tools correctly",
+  "respects tone guidelines",
+  "asks clarification when needed"
+]
+```
+
+---
+
+## Conclusion: A New Mental Model for Software
+
+| Layer               | Biological Analogy |
+| ------------------- | ------------------ |
+| CLAUDE.md           | DNA                |
+| Skills              | Molecules          |
+| Agents              | Organisms          |
+| Multi-agent systems | Ecosystems         |
+
+**Design principle: Define → Enable → Orchestrate → Evolve**
+
+As software continues to evolve in this direction, the most effective builders will not just be engineers of code — but architects of behavior.
+
+---
+
+### 📣 Read the Experiment Logs
+
+Curious how this all plays out in practice? The experiment logs cover a full weekend — from blank canvas to working app, one session at a time.
+
+- [Entry #001 · Part 1 — Ground Zero](/posts/2026-03-16-captains-log-001-the-spreadsheet-killer)
+- [Entry #001 · Part 2 — Day 1 Afternoon](/posts/2026-03-17-captains-log-002-the-spreadsheet-killer)
+- [Entry #001 · Part 3 — Day 1 Evening](/posts/2026-03-18-captains-log-003-the-spreadsheet-killer)
+- [Entry #001 · Part 4 — Day 2 Morning](/posts/2026-03-19-captains-log-004-the-spreadsheet-killer)
+- [Entry #001 · Part 5 — Final Session](/posts/2026-03-19-captains-log-005-the-spreadsheet-killer)
+
+Every lesson in this article was learned the hard way so you don't have to. Well — maybe just a little hard. It's more fun that way.
